@@ -1,0 +1,4 @@
+{
+    "ext": "html",
+    "ignore": ["node_modules/", "load_face/face_descriptors.json"]
+}
