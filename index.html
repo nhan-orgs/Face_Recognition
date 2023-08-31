@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition</title>
+    <style>
+
+        h1 {
+            text-align: center;
+        }
+        #video-container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #button{
+            margin-top: 10px;
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+    <h1> Face Recognition </h1>
+    <div id="video-container">
+        <video id="video" src="" autoplay="true" width="640" height="480"></video>
+        <button id="button" onclick='takeImage()'>Take Image</button>
+    </div>
+
+</body>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.js" 
+        integrity="sha256-JOJ7NmVm2chxYZ1KPcAYd2bwVK7NaFj9QKMp7DClews=" crossorigin="anonymous"></script>
+<script src="script.js"></script>
+</html>
