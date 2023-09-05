@@ -9,9 +9,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use('/', express.static(__dirname + '/load_face'))
+app.use('/models', express.static(__dirname + '/face_models'))
 app.use('/new', express.static(__dirname + '/save_face'))
-app.set('view cache', false)
-
 app.post('/save', async (req, res) => {
     const data = req.body.data
     if (!data) {
@@ -25,6 +24,8 @@ app.post('/save', async (req, res) => {
         res.status(500).send('Internal server error')
     }
 })
+
+app.set('view cache', false)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server listen on port: ${process.env.PORT}`)

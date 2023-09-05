@@ -15,9 +15,9 @@ function startWebcam() {
 
 const loadFaceAPI = async () => {
     await Promise.all([
-        faceapi.loadSsdMobilenetv1Model('/models'),
-        faceapi.loadFaceRecognitionModel('/models'),
-        faceapi.loadFaceLandmarkModel('/models'),
+        faceapi.loadSsdMobilenetv1Model('../models'),
+        faceapi.loadFaceRecognitionModel('../models'),
+        faceapi.loadFaceLandmarkModel('../models'),
     ])
     Toastify({
         text: 'Models loaded successfully',
