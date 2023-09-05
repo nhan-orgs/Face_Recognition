@@ -73,7 +73,7 @@ Promise.all([
 video.addEventListener("play", async () => {
 
     function loadFaceMatcher() {
-        faceMatcher = new faceapi.FaceMatcher(faceDescriptors, 0.6);
+        faceMatcher = new faceapi.FaceMatcher(faceDescriptors, 0.4);
         console.log(faceMatcher);
       }
     // await loadFaceAPI();
