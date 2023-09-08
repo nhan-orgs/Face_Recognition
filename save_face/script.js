@@ -57,6 +57,7 @@ const registerUserService = async () => {
 
     // Reset state
     faceDescriptors = []
+    imgTakenEl.innerHTML = 'Images taken: 0/4'
     enableBtn(btnTakeImg)
     disableBtn(btnSaveUser)
     inputEmail.value = ''
