@@ -1,4 +1,4 @@
-import config, { baseAxios } from './config.js'
+import { baseAxios } from './config.js'
 
 let faceDescriptors = []
 
@@ -37,7 +37,7 @@ const registerUserService = async () => {
     const descriptorsArray = Array.from(faceDescriptors)
     const jsonData = JSON.stringify(descriptorsArray)
 
-    const response = await baseAxios.post('user/register', {
+    const response = await baseAxios.post('/user/register', {
       email: inputEmail.value,
       password: inputPwd.value,
       org: inputOrg.value,

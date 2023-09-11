@@ -1,3 +1,5 @@
+import { baseAxios } from './config.js'
+
 const video = document.getElementById('video')
 const resultLabel = document.getElementById('result-label')
 
@@ -7,7 +9,7 @@ const getUserData = async (ids) => {
       throw new Error('ids is not an array')
     }
     const idsParam = ids.map((id) => encodeURIComponent(id)).join('|')
-    const response = await axios.get('http://127.0.0.1:8080/api/v1/user/descriptor', {
+    const response = await baseAxios.get('/user/descriptor', {
       params: {
         ids: idsParam,
       },
@@ -67,29 +69,16 @@ async function loadDescriptorsFromJSON() {
   } catch (error) {
     console.log('Load descriptors from json error: ', error)
   }
-  //   fetch('face_descriptors.json')
-  //     .then((response) => response.json(''))
-  //     .then((data) => {
-  //       // Convert objects to Float32Arrays
-
-  //       console.log('Descriptors loaded successfully!')
-
-  //       let [name, descriptors] = convertDataFormat(data)
-  //       faceDescriptors.push(new faceapi.LabeledFaceDescriptors(name, descriptors))
-  //     })
-  //     .catch((error) => {
-  //       console.error('An error occurred while loading the JSON file:', error)
-  //     })
 }
 
 function convertDataFormat(jsonData) {
   let face_descriptors = []
   let label = null
-  for (jd of jsonData) {
+  for (const jd of jsonData) {
     if (typeof jd === 'string') {
       label = jd
     } else {
-      values = Object.values(jd)
+      let values = Object.values(jd)
       values = new Float32Array(values)
       face_descriptors.push(values)
     }
@@ -122,11 +111,6 @@ video.addEventListener('play', async () => {
   }, 100)
 
   const displaySize = { width: video.width, height: video.height }
-  // const canvas = faceapi.createCanvasFromMedia(video);
-  // document.body.append(canvas);
-
-  // const displaySize = {width: video.width, height: video.height};
-  // faceapi.matchDimensions(canvas, displaySize);
 
   setInterval(async () => {
     try {
