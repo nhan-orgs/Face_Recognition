@@ -5,6 +5,7 @@ let faceDescriptors = []
 const video = document.getElementById('video')
 const btnTakeImg = document.querySelector('.take-img-btn')
 const imgTakenEl = document.querySelector('.image-taken')
+const captureImgWrappers = document.querySelectorAll('.js-capture-img-wrapper')
 
 // UI script
 const btnSaveUser = document.querySelector('.save-user-btn')
@@ -99,6 +100,13 @@ btnSaveUser.addEventListener('click', () => {
 })
 // End
 
+captureImgWrappers.forEach((wrapper, index) => {
+  wrapper.querySelector('.js-button-delete').addEventListener('click', () => {
+    faceDescriptors.splice(index, 1)
+    disableImage()
+  })
+})
+
 navigator.mediaDevices
   .getUserMedia({ video: true })
   .then((stream) => {
@@ -119,11 +127,48 @@ const loadFaceAPI = async () => {
 
 btnTakeImg.addEventListener('click', takeImage)
 
+const enableImage = (dataURL) => {
+  const captureImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-capture-img')
+  const placeholderImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-placeholder-img')
+  captureImgWrappers[faceDescriptors.length].classList.remove('pointer-events-none')
+  captureImg.src = dataURL
+  captureImg.classList.remove('hidden')
+  placeholderImg.classList.add('hidden')
+}
+
+const disableImage = (index) => {
+  // for (let i = index; i < faceDescriptors.length; i++) {
+  //   const captureImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-capture-img')
+  //   const placeholderImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-placeholder-img')
+  //   captureImgWrappers[faceDescriptors.length].classList.add('pointer-events-none')
+  //   captureImg.src = ''
+  //   captureImg.classList.add('hidden')
+  //   placeholderImg.classList.remove('hidden')
+  // }
+}
+
+const captureImage = () => {
+  const canvas = document.createElement('canvas')
+  canvas.width = video.videoWidth
+  canvas.height = video.videoHeight
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
+  const dataURL = canvas.toDataURL()
+
+  enableImage(dataURL)
+
+  return dataURL
+}
+
 async function takeImage() {
   try {
     if (faceDescriptors.length >= 4) {
       return
     }
+
+    const imgData = captureImage()
+    const base64Response = await fetch(imgData)
+    const blob = await base64Response.blob()
+    const img = await faceapi.bufferToImage(blob)
 
     btnTakeImg.classList.add('button-loading')
     btnTakeImg.disabled = true
@@ -131,7 +176,13 @@ async function takeImage() {
     btnTakeImg.querySelector('svg').classList.remove('hidden')
     await loadFaceAPI()
 
-    let detects = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor() // Tested
+    let detects = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor() // Tested
+
+    // let detects = await faceapi
+    //   .detectSingleFace(video)
+    //   .withFaceLandmarks()
+    //   .withFaceDescriptor() // Tested
+
     console.log(detects)
 
     // console.log(detects.descriptor)

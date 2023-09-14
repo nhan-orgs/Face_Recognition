@@ -11,22 +11,23 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/', express.static(__dirname + '/load_face'))
 app.use('/models', express.static(__dirname + '/face_models'))
 app.use('/new', express.static(__dirname + '/save_face'))
+app.use('/public', express.static(__dirname + '/public'))
 app.post('/save', async (req, res) => {
-    const data = req.body.data
-    if (!data) {
-        res.status(400).send('Lacking of data')
-    }
-    try {
-        fs.writeFileSync('load_face/face_descriptors.json', data)
-        res.status(201).send('Succeeded')
-    } catch (error) {
-        console.log('save data error: ', error)
-        res.status(500).send('Internal server error')
-    }
+  const data = req.body.data
+  if (!data) {
+    res.status(400).send('Lacking of data')
+  }
+  try {
+    fs.writeFileSync('load_face/face_descriptors.json', data)
+    res.status(201).send('Succeeded')
+  } catch (error) {
+    console.log('save data error: ', error)
+    res.status(500).send('Internal server error')
+  }
 })
 
 app.set('view cache', false)
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server listen on port: ${process.env.PORT}`)
+  console.log(`Server listen on port: ${process.env.PORT}`)
 })

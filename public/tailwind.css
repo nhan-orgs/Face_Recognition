@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+h1 {
+  text-align: center;
+}
+
+#video-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#button {
+  margin-top: 10px;
+  min-width: 116px;
+  border-radius: 9999px;
+  font-size: 14px;
+  padding: 8px 12px;
+  background-color: black;
+  border: none;
+  color: white;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.button p {
+  height: 22px;
+  padding-top: 2px;
+  margin: 0;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg); /* Rotate 360 degrees */
+  }
+}
+
+.button {
+  display: flex;
+  line-height: 18px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  animation-duration: 300ms;
+  border: 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.button.button-primary {
+  --tw-bg-opacity: 1;
+  padding: 8px 32px;
+  background-color: rgb(0 113 227 / var(--tw-bg-opacity));
+  color: white;
+}
+
+.button.button-primary:hover {
+  --tw-bg-opacity: 0.9;
+}
+
+.button.button-secondary {
+  padding: 8px 16px;
+  background-color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.modal {
+  position: fixed;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(107 114 128 / 0.2);
+  padding: 20px;
+}
+
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  padding: 24px;
+  max-width: 400px;
+  background-color: white;
+  border-radius: 16px;
+  --tw-shadow: 0 0 48px 0px rgb(0 0 0 / 0.2);
+  --tw-shadow-colored: 0 0 48px 0px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.modal-content label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-content input {
+  outline-color: #0071e3;
+  width: 100%;
+  font-size: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  border: solid 1px rgb(107 114 128 / 0.5);
+  margin-top: 8px;
+}
+
+.modal-content .text-field {
+  margin-bottom: 16px;
+}
+
+.modal-content .modal-close {
+  padding: 8px;
+  font-size: 20px;
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  background-color: transparent;
+}
+
+.modal-header {
+  margin: -24px -24px 16px;
+  background-color: #f5f7f8;
+  border-top-left-radius: 1rem /* 16px */;
+  border-top-right-radius: 1rem /* 16px */;
+  height: 72px;
+  font: 500;
+  padding-left: 24px;
+  align-items: center;
+  display: flex;
+}
+
+.modal-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 8px;
+  gap: 16px;
+}
+
+.button.take-img-btn {
+  background-color: black;
+  color: white;
+  min-width: 130px;
+}
+
+.take-img-btn.button-loading {
+  opacity: 0.2;
+}
+
+.take-img-btn.button-loading svg {
+  animation: rotate 5s linear infinite; /* Apply the 'rotate' animation infinitely */
+}
+
+.save-user-btn {
+  margin-top: 8px;
+  min-width: 130px;
+}
+
+.disable {
+  cursor: default;
+  opacity: 0.2;
+}
+
+.save-user-btn.disable {
+  background-color: rgba(0, 0, 0);
+  color: gray;
+}

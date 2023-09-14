@@ -12,90 +12,149 @@
     />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="./index.css" />
+    <!-- <link rel="stylesheet" href="./index.css" /> -->
+    <link rel="stylesheet" href="/public/styles.css" />
   </head>
 
-  <body>
-    <h1>Face Recognition</h1>
-    <div class="modal transition pointer-events-none opacity-0">
-      <div class="modal-content">
-        <div class="modal-header">New user</div>
-        <button class="button modal-close">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M6 6L18 18" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <body class="flex items-center justify-center">
+    <div class="py-8 px-16 m-8 w-fit rounded-3xl shadow-main">
+      <h1 class="font-bold text-[32px] mb-4">Register New User</h1>
+      <div class="modal transition pointer-events-none opacity-0">
+        <div class="modal-content">
+          <div class="modal-header">New user</div>
+          <button class="button modal-close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M6 6L18 18" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <div class="text-field">
+            <label for="email">Email</label>
+            <input id="email" type="email" />
+          </div>
+          <div class="text-field">
+            <label for="password">Password</label>
+            <input id="password" type="password" />
+          </div>
+          <div class="text-field">
+            <label for="org">Organization</label>
+            <input id="org" type="text" />
+          </div>
+          <div class="text-field">
+            <label for="fullName">Full name</label>
+            <input id="fullName" type="text" />
+          </div>
+
+          <div class="modal-bottom">
+            <button class="button transition button-secondary">Cancel</button>
+            <button class="button transition button-primary">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="video-container">
+        <video id="video" src="" autoplay="true" width="640" height="480" class="rounded-2xl"></video>
+        <p class="mt-5 image-taken">Images taken: 0/4</p>
+        <div class="grid grid-cols-4 mt-6 w-[640px] gap-4 mb-4">
+          <div
+            class="js-capture-img-wrapper pointer-events-none relative group rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center aspect-[4/3]"
+          >
+            <button
+              class="js-button-delete transition group-hover:opacity-100 group-hover:pointer-events-auto opacity-0 pointer-events-none bg-opacity-60 absolute right-2 top-2 rounded-full bg-gray-300 p-1"
+            >
+              <img src="/public/close_round.svg" class="w-[22px] h-[22px]" />
+            </button>
+            <img src="/public/img_box_fill.svg" class="js-placeholder-img object-cover w-10 h-10 opacity-60" />
+            <img src="" class="js-capture-img hidden w-full h-full object-cover" />
+          </div>
+
+          <div
+            class="js-capture-img-wrapper pointer-events-none relative group rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center aspect-[4/3]"
+          >
+            <button
+              class="js-button-delete transition group-hover:opacity-100 group-hover:pointer-events-auto opacity-0 pointer-events-none bg-opacity-60 absolute right-2 top-2 rounded-full bg-gray-300 p-1"
+            >
+              <img src="/public/close_round.svg" class="w-[22px] h-[22px]" />
+            </button>
+            <img src="/public/img_box_fill.svg" class="js-placeholder-img object-cover w-10 h-10 opacity-60" />
+            <img src="" class="js-capture-img hidden w-full h-full object-cover" />
+          </div>
+
+          <div
+            class="js-capture-img-wrapper pointer-events-none relative group rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center aspect-[4/3]"
+          >
+            <button
+              class="js-button-delete transition group-hover:opacity-100 group-hover:pointer-events-auto opacity-0 pointer-events-none bg-opacity-60 absolute right-2 top-2 rounded-full bg-gray-300 p-1"
+            >
+              <img src="/public/close_round.svg" class="w-[22px] h-[22px]" />
+            </button>
+            <img src="/public/img_box_fill.svg" class="js-placeholder-img object-cover w-10 h-10 opacity-60" />
+            <img src="" class="js-capture-img hidden w-full h-full object-cover" />
+          </div>
+
+          <div
+            class="js-capture-img-wrapper pointer-events-none relative group rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center aspect-[4/3]"
+          >
+            <button
+              class="js-button-delete transition group-hover:opacity-100 group-hover:pointer-events-auto opacity-0 pointer-events-none bg-opacity-60 absolute right-2 top-2 rounded-full bg-gray-300 p-1"
+            >
+              <img src="/public/close_round.svg" class="w-[22px] h-[22px]" />
+            </button>
+            <img src="/public/img_box_fill.svg" class="js-placeholder-img object-cover w-10 h-10 opacity-60" />
+            <img src="" class="js-capture-img hidden w-full h-full object-cover" />
+          </div>
+        </div>
+        <button class="take-img-btn button transition mt-4">
+          <p>Take Image</p>
+          <svg
+            class="hidden"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="white"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 6L12 3" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 21L12 19" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M19 12L21 12" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 12L6 12" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M17.6569 6.34314L18.364 5.63603"
+              stroke="#33363F"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5.63602 18.364L7.05023 16.9497"
+              stroke="#33363F"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M16.9497 16.9498L18.364 18.364"
+              stroke="#33363F"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5.63605 5.63605L7.75737 7.75737"
+              stroke="#33363F"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              UTF-8
+            />
           </svg>
         </button>
 
-        <div class="text-field">
-          <label for="email">Email</label>
-          <input id="email" type="email" />
-        </div>
-        <div class="text-field">
-          <label for="password">Password</label>
-          <input id="password" type="password" />
-        </div>
-        <div class="text-field">
-          <label for="org">Organization</label>
-          <input id="org" type="text" />
-        </div>
-        <div class="text-field">
-          <label for="fullName">Full name</label>
-          <input id="fullName" type="text" />
-        </div>
-
-        <div class="modal-bottom">
-          <button class="button transition button-secondary">Cancel</button>
-          <button class="button transition button-primary">Save</button>
-        </div>
+        <button disabled class="button button-primary save-user-btn transition disable">
+          <p>Save User</p>
+        </button>
       </div>
-    </div>
-
-    <div id="video-container">
-      <video id="video" src="" autoplay="true" width="640" height="480"></video>
-      <p style="margin-top: 20px" class="image-taken">Images taken: 0/4</p>
-      <button class="take-img-btn button transition">
-        <p>Take Image</p>
-        <svg class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 6L12 3" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M12 21L12 19" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M19 12L21 12" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M3 12L6 12" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          <path
-            d="M17.6569 6.34314L18.364 5.63603"
-            stroke="#33363F"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M5.63602 18.364L7.05023 16.9497"
-            stroke="#33363F"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M16.9497 16.9498L18.364 18.364"
-            stroke="#33363F"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M5.63605 5.63605L7.75737 7.75737"
-            stroke="#33363F"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            UTF-8
-          />
-        </svg>
-      </button>
-
-      <button disabled class="button button-primary save-user-btn transition disable">
-        <p>Save User</p>
-      </button>
     </div>
   </body>
 
