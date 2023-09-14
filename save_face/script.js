@@ -38,7 +38,7 @@ const registerUserService = async () => {
     const descriptorsArray = Array.from(faceDescriptors)
     const jsonData = JSON.stringify(descriptorsArray)
 
-    const response = await baseAxios.post('/user/register', {
+    await baseAxios.post('/user/register', {
       email: inputEmail.value,
       password: inputPwd.value,
       org: inputOrg.value,
@@ -102,8 +102,7 @@ btnSaveUser.addEventListener('click', () => {
 
 captureImgWrappers.forEach((wrapper, index) => {
   wrapper.querySelector('.js-button-delete').addEventListener('click', () => {
-    faceDescriptors.splice(index, 1)
-    disableImage()
+    deleteImage(index)
   })
 })
 
@@ -137,14 +136,23 @@ const enableImage = (dataURL) => {
 }
 
 const disableImage = (index) => {
-  // for (let i = index; i < faceDescriptors.length; i++) {
-  //   const captureImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-capture-img')
-  //   const placeholderImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-placeholder-img')
-  //   captureImgWrappers[faceDescriptors.length].classList.add('pointer-events-none')
-  //   captureImg.src = ''
-  //   captureImg.classList.add('hidden')
-  //   placeholderImg.classList.remove('hidden')
-  // }
+  const captureImg = captureImgWrappers[index].querySelector('.js-capture-img')
+  const placeholderImg = captureImgWrappers[index].querySelector('.js-placeholder-img')
+  captureImgWrappers[index].classList.add('pointer-events-none')
+  captureImg.src = ''
+  captureImg.classList.add('hidden')
+  placeholderImg.classList.remove('hidden')
+}
+
+const deleteImage = (index) => {
+  for (let i = index; i < faceDescriptors.length - 1; i++) {
+    const captureImg = captureImgWrappers[i].querySelector('.js-capture-img')
+    const nextImg = captureImgWrappers[i + 1].querySelector('.js-capture-img')
+    captureImg.src = nextImg.src
+  }
+  disableImage(faceDescriptors.length - 1)
+  faceDescriptors.splice(index, 1)
+  updateSaveDescriptorButton()
 }
 
 const captureImage = () => {
@@ -191,7 +199,7 @@ async function takeImage() {
     // console.log(faceDescriptors)
 
     if (faceDescriptors.length >= 4) {
-      activeSaveDescriptor()
+      updateSaveDescriptorButton()
     }
 
     Toastify({
@@ -225,9 +233,12 @@ async function takeImage() {
   }
 }
 
-async function activeSaveDescriptor() {
-  // Enable btn save user
-  enableBtn(btnSaveUser)
-  // Disable btn take image
-  disableBtn(btnTakeImg)
+async function updateSaveDescriptorButton() {
+  if (faceDescriptors.length === 4) {
+    enableBtn(btnSaveUser)
+    disableBtn(btnTakeImg)
+  } else {
+    disableBtn(btnSaveUser)
+    enableBtn(btnTakeImg)
+  }
 }
