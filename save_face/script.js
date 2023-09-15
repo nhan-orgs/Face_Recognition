@@ -245,3 +245,18 @@ async function updateSaveDescriptorButton() {
     enableBtn(btnTakeImg)
   }
 }
+
+// Load user data
+// const urlSearchParams = new URLSearchParams(window.location.search)
+// const fetchUserData = (id) => {
+//   try {
+//     const response = await axios
+//   } catch (error) {
+
+//   }
+// }
+
+// const userId = urlSearchParams.get('userId')
+// if (userId !== null) {
+//   fetchUserData(userId)
+// }
