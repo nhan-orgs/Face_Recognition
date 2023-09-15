@@ -35,13 +35,16 @@
       }
     </style>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <link rel="stylesheet" href="/public/styles.css" />
   </head>
 
-  <body>
-    <h1>Face Recognition</h1>
-    <h2 id="result-label">Initialising...</h2>
-    <div id="video-container">
-      <video id="video" src="" autoplay="true" width="640" height="480"></video>
+  <body class="flex items-center justify-center h-screen">
+    <div class="py-8 px-16 m-8 w-fit rounded-3xl shadow-main">
+      <h1 class="font-bold text-3xl">Face Recognition</h1>
+      <h2 id="result-label" class="mb-6 mt-4">Initialising...</h2>
+      <div id="video-container">
+        <video id="video" src="" autoplay="true" width="640" height="480" class="rounded-2xl"></video>
+      </div>
     </div>
   </body>
 

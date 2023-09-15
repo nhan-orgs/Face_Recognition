@@ -515,6 +515,9 @@ video {
 .mt-6 {
   margin-top: 1.5rem;
 }
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
 .flex {
   display: flex;
 }
@@ -535,6 +538,9 @@ video {
 }
 .h-full {
   height: 100%;
+}
+.h-screen {
+  height: 100vh;
 }
 .w-10 {
   width: 2.5rem;
@@ -604,9 +610,6 @@ video {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
-}
-.text-\[32px\] {
-  font-size: 32px;
 }
 .text-3xl {
   font-size: 1.875rem;
