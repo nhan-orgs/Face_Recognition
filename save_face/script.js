@@ -1,6 +1,11 @@
 import { baseAxios } from './config.js'
 
+const errors = {
+  CANT_RECOGNIZE: "Cannot read properties of undefined (reading 'descriptor')",
+}
+
 let faceDescriptors = []
+let images = []
 
 const video = document.getElementById('video')
 const btnTakeImg = document.querySelector('.take-img-btn')
@@ -8,6 +13,8 @@ const imgTakenEl = document.querySelector('.image-taken')
 const captureImgWrappers = document.querySelectorAll('.js-capture-img-wrapper')
 
 // UI script
+const titleEl = document.querySelector('.js-register-user')
+
 const btnSaveUser = document.querySelector('.save-user-btn')
 
 const modalEl = document.querySelector('.modal')
@@ -57,13 +64,10 @@ const registerUserService = async () => {
     }).showToast()
 
     // Reset state
-    faceDescriptors.forEach((_, idx) => {
-      disableImage(idx)
-    })
     faceDescriptors = []
-    imgTakenEl.innerHTML = 'Images taken: 0/4'
-    enableBtn(btnTakeImg)
-    disableBtn(btnSaveUser)
+    images = []
+    updateSaveDescriptorButton()
+    updateImages()
     inputEmail.value = ''
     inputPwd.value = ''
     inputOrg.value = ''
@@ -83,9 +87,17 @@ const registerUserService = async () => {
   }
 }
 
+const uploadUserImages = async () => {
+  try {
+  } catch (error) {
+    console.log('Upload user image error:', error)
+  }
+}
+
 btnSave.addEventListener('click', () => {
   closeModal()
   registerUserService()
+  uploadUserImages()
 })
 
 const disableBtn = (btn) => {
@@ -129,16 +141,25 @@ const loadFaceAPI = async () => {
 
 btnTakeImg.addEventListener('click', takeImage)
 
-const enableImage = (dataURL) => {
-  const captureImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-capture-img')
-  const placeholderImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-placeholder-img')
-  captureImgWrappers[faceDescriptors.length].classList.remove('pointer-events-none')
+// const enableImage = (dataURL) => {
+//   const captureImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-capture-img')
+//   const placeholderImg = captureImgWrappers[faceDescriptors.length].querySelector('.js-placeholder-img')
+//   captureImgWrappers[faceDescriptors.length].classList.remove('pointer-events-none')
+//   captureImg.src = dataURL
+//   captureImg.classList.remove('hidden')
+//   placeholderImg.classList.add('hidden')
+// }
+
+const setImage = (dataURL, index) => {
+  const captureImg = captureImgWrappers[index].querySelector('.js-capture-img')
+  const placeholderImg = captureImgWrappers[index].querySelector('.js-placeholder-img')
+  captureImgWrappers[index].classList.remove('pointer-events-none')
   captureImg.src = dataURL
   captureImg.classList.remove('hidden')
   placeholderImg.classList.add('hidden')
 }
 
-const disableImage = (index) => {
+const removeImage = (index) => {
   const captureImg = captureImgWrappers[index].querySelector('.js-capture-img')
   const placeholderImg = captureImgWrappers[index].querySelector('.js-placeholder-img')
   captureImgWrappers[index].classList.add('pointer-events-none')
@@ -148,14 +169,24 @@ const disableImage = (index) => {
 }
 
 const deleteImage = (index) => {
-  for (let i = index; i < faceDescriptors.length - 1; i++) {
-    const captureImg = captureImgWrappers[i].querySelector('.js-capture-img')
-    const nextImg = captureImgWrappers[i + 1].querySelector('.js-capture-img')
-    captureImg.src = nextImg.src
+  if (index < 0) {
+    console.log('Delete image index < 0')
+    return
   }
-  disableImage(faceDescriptors.length - 1)
+
   faceDescriptors.splice(index, 1)
+  images.splice(index, 1)
   updateSaveDescriptorButton()
+  updateImages()
+
+  // for (let i = index; i < faceDescriptors.length - 1; i++) {
+  //   const captureImg = captureImgWrappers[i].querySelector('.js-capture-img')
+  //   const nextImg = captureImgWrappers[i + 1].querySelector('.js-capture-img')
+  //   captureImg.src = nextImg.src
+  // }
+  // disableImage(faceDescriptors.length - 1)
+  // faceDescriptors.splice(index, 1)
+  // updateSaveDescriptorButton()
 }
 
 const captureImage = () => {
@@ -164,8 +195,6 @@ const captureImage = () => {
   canvas.height = video.videoHeight
   canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
   const dataURL = canvas.toDataURL()
-
-  enableImage(dataURL)
 
   return dataURL
 }
@@ -177,29 +206,25 @@ async function takeImage() {
     }
 
     const imgData = captureImage()
-    const base64Response = await fetch(imgData)
-    const blob = await base64Response.blob()
-    const img = await faceapi.bufferToImage(blob)
+    images.push(imgData)
+    updateImages()
 
     btnTakeImg.classList.add('button-loading')
     btnTakeImg.disabled = true
     btnTakeImg.querySelector('p').classList.add('hidden')
     btnTakeImg.querySelector('svg').classList.remove('hidden')
+
+    // Recognize face
     await loadFaceAPI()
-
-    let detects = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor() // Tested
-
-    // let detects = await faceapi
-    //   .detectSingleFace(video)
-    //   .withFaceLandmarks()
-    //   .withFaceDescriptor() // Tested
+    let detects = await faceapi
+      .detectSingleFace(getImage(faceDescriptors.length))
+      .withFaceLandmarks()
+      .withFaceDescriptor() // Tested
 
     console.log(detects)
 
-    // console.log(detects.descriptor)
     faceDescriptors.push(detects.descriptor)
     imgTakenEl.innerHTML = `Images taken: ${faceDescriptors.length}/4`
-    // console.log(faceDescriptors)
 
     if (faceDescriptors.length >= 4) {
       updateSaveDescriptorButton()
@@ -227,7 +252,11 @@ async function takeImage() {
         top: '15px',
       },
     }).showToast()
-    console.log('Took image failed: ', error)
+    console.log('Took image failed:', error)
+    if (String(error).includes(errors.CANT_RECOGNIZE)) {
+      images.splice(images.length - 1, 1)
+      updateImages()
+    }
   } finally {
     btnTakeImg.classList.remove('button-loading')
     btnTakeImg.disabled = false
@@ -246,17 +275,46 @@ async function updateSaveDescriptorButton() {
   }
 }
 
+function updateImages() {
+  for (let i = 0; i < 4; i++) {
+    if (i in images) {
+      setImage(images[i], i)
+    } else {
+      removeImage(i)
+    }
+  }
+  imgTakenEl.innerHTML = `Images taken: ${faceDescriptors.length}/4`
+}
+
+function getImage(index) {
+  return captureImgWrappers[index].querySelector('.js-capture-img')
+}
+
 // Load user data
-// const urlSearchParams = new URLSearchParams(window.location.search)
-// const fetchUserData = (id) => {
-//   try {
-//     const response = await axios
-//   } catch (error) {
+const urlSearchParams = new URLSearchParams(window.location.search)
+const fetchUserData = async (id) => {
+  try {
+    const response = await baseAxios.get(`/user/${id}`)
+    console.log('response:', response)
+  } catch (error) {}
+}
 
-//   }
-// }
+const userId = urlSearchParams.get('userId')
+if (userId !== 'undefined') {
+  titleEl.innerHTML = "Update User's Images"
+  fetchUserData(userId)
+} else {
+  titleEl.innerHTML = 'Register New User'
+}
 
-// const userId = urlSearchParams.get('userId')
-// if (userId !== null) {
-//   fetchUserData(userId)
-// }
+function dataURLtoFile(dataurl, filename) {
+  var arr = dataurl.split(','),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[arr.length - 1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n)
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n)
+  }
+  return new File([u8arr], filename, { type: mime })
+}
