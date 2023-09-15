@@ -57,6 +57,9 @@ const registerUserService = async () => {
     }).showToast()
 
     // Reset state
+    faceDescriptors.forEach((_, idx) => {
+      disableImage(idx)
+    })
     faceDescriptors = []
     imgTakenEl.innerHTML = 'Images taken: 0/4'
     enableBtn(btnTakeImg)
