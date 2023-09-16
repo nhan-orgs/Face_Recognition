@@ -45,7 +45,7 @@ const registerUserService = async () => {
     const descriptorsArray = Array.from(faceDescriptors)
     const jsonData = JSON.stringify(descriptorsArray)
 
-    await baseAxios.post('/user/register', {
+    const response = await baseAxios.post('/user/register', {
       email: inputEmail.value,
       password: inputPwd.value,
       org: inputOrg.value,
@@ -63,15 +63,7 @@ const registerUserService = async () => {
       },
     }).showToast()
 
-    // Reset state
-    faceDescriptors = []
-    images = []
-    updateSaveDescriptorButton()
-    updateImages()
-    inputEmail.value = ''
-    inputPwd.value = ''
-    inputOrg.value = ''
-    inputFullName.value = ''
+    return response.data
   } catch (error) {
     Toastify({
       text: 'Register user failed',
@@ -87,17 +79,25 @@ const registerUserService = async () => {
   }
 }
 
-const uploadUserImages = async () => {
+const uploadUserImages = async (id) => {
   try {
+    const data = new FormData()
+    images.forEach((imageDataUrl, index) => {
+      const file = dataURLtoFile(imageDataUrl, id + `_${index}.png`)
+      data.append('images', file)
+    })
+
+    await baseAxios.post(`/user/upload/${id}`, data)
   } catch (error) {
     console.log('Upload user image error:', error)
   }
 }
 
-btnSave.addEventListener('click', () => {
+btnSave.addEventListener('click', async () => {
   closeModal()
-  registerUserService()
-  uploadUserImages()
+  const userData = await registerUserService()
+  uploadUserImages(userData._id)
+  resetDefaultState()
 })
 
 const disableBtn = (btn) => {
@@ -111,8 +111,27 @@ const enableBtn = (btn) => {
 }
 
 btnSaveUser.addEventListener('click', () => {
-  modalEl.classList.remove('pointer-events-none', 'opacity-0')
+  if (hasUserId()) {
+    saveImages(getCurrUserId())
+  } else {
+    modalEl.classList.remove('pointer-events-none', 'opacity-0')
+  }
 })
+
+async function saveImages(userId) {
+  try {
+    const descriptorsArray = Array.from(faceDescriptors)
+    const jsonData = JSON.stringify(descriptorsArray)
+
+    baseAxios.put(`/user/${userId}`, {
+      descriptor: jsonData,
+    })
+    uploadUserImages(userId)
+  } catch (error) {
+    console.log('Save images error:', error)
+  }
+}
+
 // End
 
 captureImgWrappers.forEach((wrapper, index) => {
@@ -291,18 +310,39 @@ function getImage(index) {
 }
 
 // Load user data
-const urlSearchParams = new URLSearchParams(window.location.search)
-const fetchUserData = async (id) => {
-  try {
-    const response = await baseAxios.get(`/user/${id}`)
-    console.log('response:', response)
-  } catch (error) {}
+function getCurrUserId() {
+  const urlSearchParams = new URLSearchParams(window.location.search)
+  return urlSearchParams.get('userId')
 }
 
-const userId = urlSearchParams.get('userId')
-if (userId !== 'undefined') {
+function hasUserId() {
+  return getCurrUserId() !== 'undefined'
+}
+
+const fetchUserImages = async (id) => {
+  try {
+    const response = await baseAxios.get(`/user/${id}/images`)
+    return response.data
+  } catch (error) {
+    console.log('fetchUserData error:', error)
+  }
+}
+
+const userId = getCurrUserId()
+if (hasUserId()) {
   titleEl.innerHTML = "Update User's Images"
-  fetchUserData(userId)
+  const userData = await fetchUserImages(userId)
+  if (userData) {
+    images = userData.images.map((imgBase64) => {
+      const dataUri = 'data:image/png;base64,' + imgBase64
+      return dataUri
+    })
+    faceDescriptors = JSON.parse(userData.descriptor)
+    titleEl.innerHTML = `Update ${userData.fullName}'s Images`
+    updateSaveDescriptorButton()
+    updateImages()
+    disableBtn(btnSaveUser)
+  }
 } else {
   titleEl.innerHTML = 'Register New User'
 }
@@ -317,4 +357,16 @@ function dataURLtoFile(dataurl, filename) {
     u8arr[n] = bstr.charCodeAt(n)
   }
   return new File([u8arr], filename, { type: mime })
+}
+
+function resetDefaultState() {
+  // Reset state
+  faceDescriptors = []
+  images = []
+  updateSaveDescriptorButton()
+  updateImages()
+  inputEmail.value = ''
+  inputPwd.value = ''
+  inputOrg.value = ''
+  inputFullName.value = ''
 }
