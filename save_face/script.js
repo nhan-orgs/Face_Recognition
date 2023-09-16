@@ -123,10 +123,24 @@ async function saveImages(userId) {
     const descriptorsArray = Array.from(faceDescriptors)
     const jsonData = JSON.stringify(descriptorsArray)
 
-    baseAxios.put(`/user/${userId}`, {
-      descriptor: jsonData,
-    })
-    uploadUserImages(userId)
+    const promiseArr = [
+      baseAxios.put(`/user/${userId}`, {
+        descriptor: jsonData,
+      }),
+      await uploadUserImages(userId),
+    ]
+    await Promise.all(promiseArr)
+    Toastify({
+      text: 'Saved successfully!',
+      style: {
+        background: '#0071e3',
+        transform: 'translate(0px, 0px)',
+        fontSize: '14px',
+        borderRadius: '8px',
+        top: '15px',
+      },
+    }).showToast()
+    disableBtn(btnSaveUser)
   } catch (error) {
     console.log('Save images error:', error)
   }
@@ -262,7 +276,7 @@ async function takeImage() {
     // Save the descriptor
   } catch (error) {
     Toastify({
-      text: 'Some errors occured',
+      text: 'Took image failed, please try again',
       style: {
         background: 'rgb(255, 95, 109)',
         transform: 'translate(0px, 0px)',
