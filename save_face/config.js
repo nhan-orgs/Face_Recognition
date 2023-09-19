@@ -1,7 +1,7 @@
 const config = {
   BASE_URL: 'https://user-mgmt.digitalauto.tech/api/',
   // BASE_URL: 'http://localhost:8081/api/',
-  MODELS_URL: 'http://localhost:8081/models',
+  MODELS_URL: 'https://user-mgmt.digitalauto.tech/models',
   VERSION: 'v1',
 }
 
