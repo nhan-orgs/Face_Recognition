@@ -1,4 +1,4 @@
-import { baseAxios } from './config.js'
+import config, { baseAxios } from './config.js'
 
 const errors = {
   CANT_RECOGNIZE: "Cannot read properties of undefined (reading 'descriptor')",
@@ -166,9 +166,9 @@ navigator.mediaDevices
 
 const loadFaceAPI = async () => {
   await Promise.all([
-    faceapi.loadSsdMobilenetv1Model('../models'),
-    faceapi.loadFaceRecognitionModel('../models'),
-    faceapi.loadFaceLandmarkModel('../models'),
+    faceapi.loadSsdMobilenetv1Model(config.MODELS_URL),
+    faceapi.loadFaceRecognitionModel(config.MODELS_URL),
+    faceapi.loadFaceLandmarkModel(config.MODELS_URL),
   ])
 }
 

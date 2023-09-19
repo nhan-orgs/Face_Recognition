@@ -38,9 +38,9 @@ function startWebcam() {
 
 const loadFaceAPI = async () => {
   await Promise.all([
-    faceapi.loadSsdMobilenetv1Model('../models'),
-    faceapi.loadFaceRecognitionModel('../models'),
-    faceapi.loadFaceLandmarkModel('../models'),
+    faceapi.loadSsdMobilenetv1Model(config.MODELS_URL),
+    faceapi.loadFaceRecognitionModel(config.MODELS_URL),
+    faceapi.loadFaceLandmarkModel(config.MODELS_URL),
   ])
   Toastify({
     text: 'Models loaded successfully',
@@ -90,9 +90,9 @@ let faceDescriptors = []
 let faceMatcher
 
 Promise.all([
-  faceapi.loadSsdMobilenetv1Model('/models'),
-  faceapi.loadFaceRecognitionModel('/models'),
-  faceapi.loadFaceLandmarkModel('/models'),
+  faceapi.loadSsdMobilenetv1Model(config.MODELS_URL),
+  faceapi.loadFaceRecognitionModel(config.MODELS_URL),
+  faceapi.loadFaceLandmarkModel(config.MODELS_URL),
 ]).then(startWebcam)
 
 video.addEventListener('play', async () => {
